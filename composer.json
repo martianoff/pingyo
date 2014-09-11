@@ -1,0 +1,35 @@
+{
+	"name": "maksimru/pingyoapplication",
+	"type": "library",
+	"description": "",
+	"keywords": ["pingyo"],
+	"homepage": "http://github.com/maksimru/pingyoapplication",
+	"license" : "BSD",
+	"authors" : [
+		{
+			"name": "Maksim",
+			"email": "maxmru@yandex.ru",
+			"homepage": "http://www.google.com"
+		}
+	],
+	"repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/maksimru/valitron"
+        }
+    ],
+	"require": {
+		"php": ">=5.3.2",
+		"vlucas/valitron": "dev-additional_rules_set"
+	},
+	"require-dev": {
+		"phpunit/phpunit": "@stable"
+	},
+	"minimum-stability": "dev",
+	"prefer-stable": true,
+	"autoload": {
+		"psr-4": {
+			"PingYo\\": "src/"
+		}
+	}
+}
