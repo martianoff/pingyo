@@ -1,18 +1,6 @@
 <?php
 
 class PingYoApplicationDetails {
-	private $title_variants = ['Mr','Mrs','Ms','Miss'];
-	private $employerindustry_variants = ['ConstructionManufacturing','Military','Health','BankingInsurance','Education','CivilService','SupermarketRetail',
-			'UtilitiesTelecom','HotelRestaurantAndLeisure','OtherOfficeBased','OtherNotOfficeBased','None'];
-	
-	private $incomesource_variants = ['SelfEmployed','EmployedFullTime','EmployedPartTime','EmployedTemporary','Pension','DisabilityBenefits','Benefits'];
-	private $payfrequency_variants = ['Weekly','BiWeekly','Fortnightly','LastDayMonth','LastWorkingDayMonth','SpecificDayOfMonth','TwiceMonthly','FourWeekly',
-			'LastFriday','LastThursday','LastWednesday','LastTuesday','LastMonday','Other','None'];
-	private $incomepaymenttype_variants = ['None','Cheque','Cash','RegionalDirectDeposit','NonRegionalDirectDeposit'];
-	private $nationalidentitynumbertype_variants = ['NationalInsurance'];
-	private $residentialstatus_variants = ['HomeOwner','PrivateTenant','CouncilTenant','LivingWithParents','LivingWithFriends','Other'];
-	private $bankcardtype_variants = ['AmericanExpress','Solo','Visa','VisaDebit','VisaDelta','VisaElectron','Discover','MasterCard','MasterCardDebit','Laser','None','Unknown'];
-	private $consenttocreditsearch_variants = [false,true];
 			
 	public $title;
 	public $firstname;
@@ -58,6 +46,8 @@ class PingYoApplicationDetails {
 	public $minimumcommissionamount;
 	public $maximumcommissionamount;
 	public $applicationextensions;
+	
+	private $consenttocreditsearch_variants = [false,true];
 	
 	private function strDateToJsonDate($strdate){
 		$date = new DateTime($strdate,new DateTimeZone("UTC"));
@@ -131,15 +121,15 @@ class PingYoApplicationDetails {
 				[['dateofbirth'], $this->getValidDOB()]
 			],
 			'in'=>[
-				[['title'], $this->title_variants],
-				[['employerindustry'], $this->employerindustry_variants],
-				[['incomesource'], $this->incomesource_variants],
-				[['payfrequency'], $this->payfrequency_variants],
-				[['incomepaymenttype'],$this->incomepaymenttype_variants],
-				[['nationalidentitynumbertype'],$this->nationalidentitynumbertype_variants],
-				[['residentialstatus'],$this->residentialstatus_variants],
+				[['title'], PingYoVarTitles::validation_set()],
+				[['employerindustry'], PingYoVarEmployerIndustry::validation_set()],
+				[['incomesource'], PingYoVarIncomeSource::validation_set()],
+				[['payfrequency'], PingYoVarPayFrequency::validation_set()],
+				[['incomepaymenttype'], PingYoVarIncomePaymentType::validation_set()],
+				[['nationalidentitynumbertype'], PingYoVarNationalIdentityNumberType::validation_set()],
+				[['residentialstatus'],PingYoVarResidentialStatus::validation_set()],
 				[['consenttocreditsearch','consenttomarketingemails'], $this->consenttocreditsearch_variants],
-				[['bankcardtype'],$this->bankcardtype_variants],
+				[['bankcardtype'],PingYoVarBankCardType::validation_set()],
 				[['addresscountrycode'],['AF','AD','AE','AG','AI','AL','AM','AN','AO','AQ','AR','AS','AT','AU','AW','AZ','BA','BB','BD','BE','BF','BG','BH','BI',
 				'BJ','BM','BN','BO','BR','BS','BT','BV','BW','BY','BZ','CA','CC','CD','CF','CG','CH','CI','CK','CL','CM','CN','CO','CR','CU','CV','CX','CY','CZ',
 				'DE','DJ','DK','DM','DO','DZ','EC','EE','EG','EH','ER','ES','ET','FI','FJ','FK','FM','FO','FR','FX','GA','GB','GD','GE','GF','GH','GI','GL','GM',
@@ -189,21 +179,21 @@ class PingYoApplicationDetails {
 		$r=$this->validate();
 		if($r===true)
 		{
-			return ['Title'=> (array_search($this->title, $this->title_variants)+1),'FirstName'=>$this->firstname,'LastName'=>$this->lastname,
+			return ['Title'=> $this->title,'FirstName'=>$this->firstname,'LastName'=>$this->lastname,
 			'DateOfBirth'=>$this->strDateToJsonDate($this->dateofbirth),'Email'=>$this->email,
 			'HomePhoneNumber'=>$this->NormalizePhone($this->homephonenumber,$this->addresscountrycode),
 			'MobilePhoneNumber'=>$this->NormalizePhone($this->mobilephonenumber,$this->addresscountrycode),
 			'WorkPhoneNumber'=>$this->NormalizePhone($this->workphonenumber,$this->addresscountrycode),'EmployerName'=>$this->employername,'JobTitle'=>$this->jobtitle,
-			'EmploymentStarted'=>$this->strDateToJsonDate($this->employmentstarted),'EmployerIndustry'=>(array_search($this->employerindustry,$this->employerindustry_variants)+1),
-			'IncomeSource'=>(array_search($this->incomesource,$this->incomesource_variants)+1),'PayFrequency'=>(array_search($this->payfrequency,$this->payfrequency_variants)+1),
-			'PayAmount'=>$this->payamount,'IncomePaymentType'=>(array_search($this->incomepaymenttype,$this->incomepaymenttype_variants)+1),
+			'EmploymentStarted'=>$this->strDateToJsonDate($this->employmentstarted),'EmployerIndustry'=>$this->employerindustry,
+			'IncomeSource'=>$this->incomesource,'PayFrequency'=>$this->payfrequency,
+			'PayAmount'=>$this->payamount,'IncomePaymentType'=>$this->incomepaymenttype,
 			'NextPayDate'=>$this->strDateToJsonDate($this->nextpaydate),'FollowingPayDate'=>$this->strDateToJsonDate($this->followingpaydate),'LoanAmount'=>$this->loanamount,
-			'NationalIdentityNumber'=>$this->nationalidentitynumber,'NationalIdentityNumberType'=>(array_search($this->nationalidentitynumbertype,$this->nationalidentitynumbertype_variants)+1),
+			'NationalIdentityNumber'=>$this->nationalidentitynumber,'NationalIdentityNumberType'=>$this->nationalidentitynumbertype,
 			'ConsentToCreditSearch'=>$this->consenttocreditsearch,'ConsentToMarketingEmails'=>$this->consenttomarketingemails,
-			'ResidentialStatus'=>(array_search($this->residentialstatus,$this->residentialstatus_variants)+1),'HouseNumber'=>$this->housenumber,'HouseName'=>$this->housename,
+			'ResidentialStatus'=>$this->residentialstatus,'HouseNumber'=>$this->housenumber,'HouseName'=>$this->housename,
 			'AddressStreet1'=>$this->addressstreet1,'AddressCity'=>$this->addresscity,'AddressCountryCode'=>$this->addresscountrycode,'AddressCounty'=>$this->addresscounty,
 			'AddressMoveIn'=>$this->strDateToJsonDate($this->addressmovein),'AddressPostcode'=>$this->addresspostcode,'BankAccountNumber'=>$this->bankaccountnumber,
-			'BankCardType'=>(array_search($this->bankcardtype,$this->bankcardtype_variants)+1),'BankRoutingNumber'=>$this->bankroutingnumber,'MonthlyMortgageRent'=>$this->monthlymortgagerent,
+			'BankCardType'=>$this->bankcardtype,'BankRoutingNumber'=>$this->bankroutingnumber,'MonthlyMortgageRent'=>$this->monthlymortgagerent,
 			'MonthlyCreditCommitments'=>$this->monthlycreditcommitments,'OtherExpenses'=>$this->otherexpenses,'MinimumCommissionAmount'=>$this->minimumcommissionamount,
 			'MaximumCommissionAmount'=>$this->maximumcommissionamount,'ApplicationExtensions'=>$this->applicationextensions,"LoanAmountCurrencyCode"=>null,"PayAmountCurrencyCode"=>null];
 		}

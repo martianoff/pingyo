@@ -7,8 +7,8 @@ class PingYoApplication {
 	public $subaffiliate;
 	public $timeout;
 	public $testonly;
-	public $applicationdetails;
-	public $sourcedetails;
+	private $applicationdetails;
+	private $sourcedetails;
 	
 	private $connection_status = false;
 	
@@ -50,6 +50,16 @@ class PingYoApplication {
 		} else {
 		    return $validator->errors();
 		}
+	}
+	
+	public function setApplicationDetails(PingYoApplicationDetails $applicationdetails)
+	{
+		$this->applicationdetails = $applicationdetails;
+	}
+	
+	public function setSourceDetails(PingYoSourceDetails $sourcedetails)
+	{
+		$this->sourcedetails = $sourcedetails;
 	}
 	
 	public function toArray(){

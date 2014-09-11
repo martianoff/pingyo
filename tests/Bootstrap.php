@@ -19,6 +19,15 @@ require_once 'PingYo/PingYoSourceDetails.php';
 require_once 'PingYo/PingYoApplicationDetails.php';
 require_once 'PingYo/PingYoStatus.php';
 
+require_once 'PingYo/PingYoVarTitles.php';
+require_once 'PingYo/PingYoVarBankCardType.php';
+require_once 'PingYo/PingYoVarResidentialStatus.php';
+require_once 'PingYo/PingYoVarIncomePaymentType.php';
+require_once 'PingYo/PingYoVarPayFrequency.php';
+require_once 'PingYo/PingYoVarIncomeSource.php';
+require_once 'PingYo/PingYoVarEmployerIndustry.php';
+require_once 'PingYo/PingYoVarNationalIdentityNumberType.php';
+
 // Include the composer autoloader
 require_once dirname(__DIR__) . '/vendor/autoload.php';
 

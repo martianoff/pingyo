@@ -25,7 +25,7 @@ Step 2. Create Application Details object
 ```php
 $application_details = new PingYoApplicationDetails();
 
-$application_details->title = 'Mr';
+$application_details->title = PingYoVarTitles::MR;
 $application_details->firstname = "John";
 $application_details->lastname = "Smith";
 $application_details->dateofbirth = "1994-09-01";
@@ -37,19 +37,19 @@ $application_details->workphonenumber = "+12345678900";
 $application_details->employername = "Test Corp";
 $application_details->jobtitle = "Construction Worker";
 $application_details->employmentstarted = "2014-09-01";
-$application_details->employerindustry = "ConstructionManufacturing";
-$application_details->incomesource = "EmployedFullTime";
-$application_details->payfrequency = "LastWorkingDayMonth";
+$application_details->employerindustry = PingYoVarEmployerIndustry::ConstructionManufacturing;
+$application_details->incomesource = PingYoVarIncomeSource::EmployedFullTime;
+$application_details->payfrequency = PingYoVarPayFrequency::LastWorkingDayMonth;
 $application_details->payamount = 100;
-$application_details->incomepaymenttype = "RegionalDirectDeposit";
+$application_details->incomepaymenttype = PingYoVarIncomePaymentType::RegionalDirectDeposit;
 $application_details->nextpaydate = "2014-10-01";
 $application_details->followingpaydate = "2014-10-10";
 $application_details->loanamount = 10000;
 $application_details->nationalidentitynumber = null;
-$application_details->nationalidentitynumbertype = 'NationalInsurance';
+$application_details->nationalidentitynumbertype = PingYoVarNationalIdentityNumberType::NationalInsurance;
 $application_details->consenttocreditsearch = true;
 $application_details->consenttomarketingemails = true;
-$application_details->residentialstatus = "HomeOwner";
+$application_details->residentialstatus = PingYoVarResidentialStatus::HomeOwner;
 
 $application_details->housenumber = "122";
 $application_details->housename = null;
@@ -61,7 +61,7 @@ $application_details->addressmovein = "2014-08-01";
 $application_details->addresspostcode = "BT602EW";
 
 $application_details->bankaccountnumber = "12345678";
-$application_details->bankcardtype = "VisaDebit";
+$application_details->bankcardtype = PingYoVarBankCardType::VisaDebit;
 $application_details->bankroutingnumber = "123456";
 $application_details->monthlymortgagerent = 600;
 $application_details->monthlycreditcommitments = 100;
@@ -78,8 +78,8 @@ $application = new PingYoApplication();
 $application->affiliateid = 'TEST';
 $application->timeout = 120;
 $application->testonly = true;
-$application->applicationdetails = $application_details;
-$application->sourcedetails = $source_details;
+$application->setApplicationDetails($application_details);
+$application->setSourceDetails($source_details);
 ```
 
 Step 4. Validate
