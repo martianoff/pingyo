@@ -1,10 +1,10 @@
 ## Installation
 
-PingYoApplication uses [Composer](http://getcomposer.org) to install and update:
+Application uses [Composer](http://getcomposer.org) to install and update:
 
 ```
 curl -s http://getcomposer.org/installer | php
-php composer.phar require maksimru/pingyoapplication
+php composer.phar require maksimru/Application
 ```
 
 ## Usage
@@ -14,7 +14,7 @@ Dates will be converted to JS Date objects automatically.
 
 Step 1. Create Source Details object
 ```php
-$source_details = new PingYoSourceDetails();
+$source_details = new PingYo\SourceDetails();
 $source_details->address = 'asd';
 $source_details->clientuseragent = 'asd';
 $source_details->creationurl = 'http://www.url.com';
@@ -23,9 +23,9 @@ $source_details->creationurl = 'http://www.url.com';
 Step 2. Create Application Details object
 
 ```php
-$application_details = new PingYoApplicationDetails();
+$application_details = new PingYo\ApplicationDetails();
 
-$application_details->title = PingYoVarTitles::MR;
+$application_details->title = TitleTypes::MR;
 $application_details->firstname = "John";
 $application_details->lastname = "Smith";
 $application_details->dateofbirth = "1994-09-01";
@@ -37,19 +37,19 @@ $application_details->workphonenumber = "+12345678900";
 $application_details->employername = "Test Corp";
 $application_details->jobtitle = "Construction Worker";
 $application_details->employmentstarted = "2014-09-01";
-$application_details->employerindustry = PingYoVarEmployerIndustry::ConstructionManufacturing;
-$application_details->incomesource = PingYoVarIncomeSource::EmployedFullTime;
-$application_details->payfrequency = PingYoVarPayFrequency::LastWorkingDayMonth;
+$application_details->employerindustry = PingYo\EmployerIndustryTypes::ConstructionManufacturing;
+$application_details->incomesource = PingYo\IncomeSourceTypes::EmployedFullTime;
+$application_details->payfrequency = PingYo\PayFrequencyTypes::LastWorkingDayMonth;
 $application_details->payamount = 100;
-$application_details->incomepaymenttype = PingYoVarIncomePaymentType::RegionalDirectDeposit;
+$application_details->incomepaymenttype = PingYo\IncomePaymentTypes::RegionalDirectDeposit;
 $application_details->nextpaydate = "2014-10-01";
 $application_details->followingpaydate = "2014-10-10";
 $application_details->loanamount = 10000;
 $application_details->nationalidentitynumber = null;
-$application_details->nationalidentitynumbertype = PingYoVarNationalIdentityNumberType::NationalInsurance;
+$application_details->nationalidentitynumbertype = PingYo\NationalIdentityNumberTypes::NationalInsurance;
 $application_details->consenttocreditsearch = true;
 $application_details->consenttomarketingemails = true;
-$application_details->residentialstatus = PingYoVarResidentialStatus::HomeOwner;
+$application_details->residentialstatus = PingYo\ResidentialStatusTypes::HomeOwner;
 
 $application_details->housenumber = "122";
 $application_details->housename = null;
@@ -61,7 +61,7 @@ $application_details->addressmovein = "2014-08-01";
 $application_details->addresspostcode = "BT602EW";
 
 $application_details->bankaccountnumber = "12345678";
-$application_details->bankcardtype = PingYoVarBankCardType::VisaDebit;
+$application_details->bankcardtype = PingYo\BankCardTypes::VisaDebit;
 $application_details->bankroutingnumber = "123456";
 $application_details->monthlymortgagerent = 600;
 $application_details->monthlycreditcommitments = 100;
@@ -71,10 +71,10 @@ $application_details->maximumcommissionamount = 0;
 $application_details->applicationextensions = ["x"=>"hello","y"=>"world"];
 ```
 
-Step 3. Create Application object and attach PingYoApplicationDetails and PingYoSourceDetails objects
+Step 3. Create Application object and attach ApplicationDetails and SourceDetails objects
 
 ```php
-$application = new PingYoApplication();
+$application = new PingYo\Application();
 $application->affiliateid = 'TEST';
 $application->timeout = 120;
 $application->testonly = true;
@@ -178,7 +178,7 @@ $corrid = $application_status->correlationid;
 
 //....
 //async requests code
-$application_status=PingYoStatus::CreateFromCorrelationId($corrid);
+$application_status=PingYo\Status::CreateFromCorrelationId($corrid);
 $application_status->refresh();
 if($application_status->percentagecomplete==100)
 {
@@ -191,6 +191,22 @@ else
 	$status = $application_status->status;
 	$problem = $application_status->message;
 }
+```
+
+## LOGGER SUPPORT
+
+Install Monolog Logger (https://github.com/Seldaek/monolog) or any other Psr3 logger
+
+```php
+$logger = new Logger("PingYo");
+$logger->pushHandler(new StreamHandler("pingyo.log"));
+
+$application = new PingYo\Application();
+$application->attachLogger($logger);
+
+//...
+//for async requests
+$application_status=PingYo\Status::CreateFromCorrelationId($corrid,$logger);
 ```
 
 ## RUNNING TESTS

@@ -1,6 +1,8 @@
 <?php
 
-class PingYoVarResidentialStatus {
+namespace PingYo;
+
+class ResidentialStatusTypes {
 
 	const HomeOwner = 1;
 	const PrivateTenant = 2;

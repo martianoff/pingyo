@@ -23,7 +23,8 @@
 		"vlucas/valitron": "dev-additional_rules_set"
 	},
 	"require-dev": {
-		"phpunit/phpunit": "@stable"
+		"phpunit/phpunit": "@stable",
+		"monolog/monolog": "1.10.0"
 	},
 	"minimum-stability": "dev",
 	"prefer-stable": true,

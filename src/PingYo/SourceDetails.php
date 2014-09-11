@@ -1,6 +1,7 @@
 <?php
+namespace PingYo;
 
-class PingYoSourceDetails {
+class SourceDetails {
 		
 	public $address;
 	public $clientuseragent;
@@ -21,7 +22,7 @@ class PingYoSourceDetails {
 	];
 	
 	public function validate() {
-		$validator = new Valitron\Validator(array('address'=>$this->address,'clientuseragent'=>$this->clientuseragent,'creationurl'=>$this->creationurl,'referringurl'=>$this->referringurl,'languagecodes'=>$this->languagecodes));
+		$validator = new \Valitron\Validator(array('address'=>$this->address,'clientuseragent'=>$this->clientuseragent,'creationurl'=>$this->creationurl,'referringurl'=>$this->referringurl,'languagecodes'=>$this->languagecodes));
 		$validator->rules($this->validation_rules);
 		if($validator->validate()) {
 		    return true;

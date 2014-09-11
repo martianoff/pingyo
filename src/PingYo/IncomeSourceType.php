@@ -1,6 +1,8 @@
 <?php
 
-class PingYoVarIncomeSource {
+namespace PingYo;
+
+class IncomeSourceTypes {
 	
 	const SelfEmployed = 1;
 	const EmployedFullTime = 2;

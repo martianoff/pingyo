@@ -1,6 +1,8 @@
 <?php
 
-class PingYoVarEmployerIndustry {
+namespace PingYo;
+
+class EmployerIndustryTypes {
 	
 	const ConstructionManufacturing = 1;
 	const Military = 2;

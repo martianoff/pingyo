@@ -1,6 +1,8 @@
 <?php
 
-class PingYoVarNationalIdentityNumberType {
+namespace PingYo;
+
+class NationalIdentityNumberTypes {
 
 	const None = null;
 	const NationalInsurance = 1;

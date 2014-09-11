@@ -1,6 +1,8 @@
 <?php
 
-class PingYoVarTitles {
+namespace PingYo;
+
+class TitleTypes {
 	const MR = 1;
 	const MRS = 2;
 	const MS = 3;

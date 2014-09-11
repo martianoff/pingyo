@@ -14,19 +14,19 @@ $library = "$root/src";
 $path = array($library, get_include_path());
 set_include_path(implode(PATH_SEPARATOR, $path));
 
-require_once 'PingYo/PingYoApplication.php';
-require_once 'PingYo/PingYoSourceDetails.php';
-require_once 'PingYo/PingYoApplicationDetails.php';
-require_once 'PingYo/PingYoStatus.php';
+require_once 'PingYo/Application.php';
+require_once 'PingYo/SourceDetails.php';
+require_once 'PingYo/ApplicationDetails.php';
+require_once 'PingYo/Status.php';
 
-require_once 'PingYo/PingYoVarTitles.php';
-require_once 'PingYo/PingYoVarBankCardType.php';
-require_once 'PingYo/PingYoVarResidentialStatus.php';
-require_once 'PingYo/PingYoVarIncomePaymentType.php';
-require_once 'PingYo/PingYoVarPayFrequency.php';
-require_once 'PingYo/PingYoVarIncomeSource.php';
-require_once 'PingYo/PingYoVarEmployerIndustry.php';
-require_once 'PingYo/PingYoVarNationalIdentityNumberType.php';
+require_once 'PingYo/TitlesType.php';
+require_once 'PingYo/BankCardType.php';
+require_once 'PingYo/ResidentialStatusType.php';
+require_once 'PingYo/IncomePaymentType.php';
+require_once 'PingYo/PayFrequencyType.php';
+require_once 'PingYo/IncomeSourceType.php';
+require_once 'PingYo/EmployerIndustryType.php';
+require_once 'PingYo/NationalIdentityNumberType.php';
 
 // Include the composer autoloader
 require_once dirname(__DIR__) . '/vendor/autoload.php';

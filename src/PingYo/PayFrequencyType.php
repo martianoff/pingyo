@@ -1,6 +1,8 @@
 <?php
 
-class PingYoVarPayFrequency {
+namespace PingYo;
+
+class PayFrequencyTypes {
 	
 	const Weekly = 1;
 	const BiWeekly = 2;

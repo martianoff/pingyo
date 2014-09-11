@@ -1,6 +1,8 @@
 <?php
 
-class PingYoVarIncomePaymentType {
+namespace PingYo;
+
+class IncomePaymentTypes {
 
 	const None = 1;
 	const Cheque = 2;

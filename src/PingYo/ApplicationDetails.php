@@ -1,6 +1,7 @@
 <?php
+namespace PingYo;
 
-class PingYoApplicationDetails {
+class ApplicationDetails {
 			
 	public $title;
 	public $firstname;
@@ -50,7 +51,7 @@ class PingYoApplicationDetails {
 	private $consenttocreditsearch_variants = [false,true];
 	
 	private function strDateToJsonDate($strdate){
-		$date = new DateTime($strdate,new DateTimeZone("UTC"));
+		$date = new \DateTime($strdate,new \DateTimeZone("UTC"));
 		return '/Date('.($date->getTimestamp()*1000).')/';
 	}
 	
@@ -62,19 +63,19 @@ class PingYoApplicationDetails {
 	}
 	
 	private function getValidDOB(){
-		$date = new DateTime("now",new DateTimeZone("UTC"));
+		$date = new \DateTime("now",new \DateTimeZone("UTC"));
 		$date->sub(date_interval_create_from_date_string('18 years'));
 		return $date;
 	}
 	
 	private function getValidPAYDATE(){
-		$date = new DateTime("now",new DateTimeZone("UTC"));
+		$date = new \DateTime("now",new \DateTimeZone("UTC"));
 		$date->add(date_interval_create_from_date_string('45 days'));
 		return $date;
 	}
 	
 	private function getTodayDate(){
-		$date = new DateTime("now",new DateTimeZone("UTC"));
+		$date = new \DateTime("now",new \DateTimeZone("UTC"));
 		return $date;
 	}
 	
@@ -121,15 +122,15 @@ class PingYoApplicationDetails {
 				[['dateofbirth'], $this->getValidDOB()]
 			],
 			'in'=>[
-				[['title'], PingYoVarTitles::validation_set()],
-				[['employerindustry'], PingYoVarEmployerIndustry::validation_set()],
-				[['incomesource'], PingYoVarIncomeSource::validation_set()],
-				[['payfrequency'], PingYoVarPayFrequency::validation_set()],
-				[['incomepaymenttype'], PingYoVarIncomePaymentType::validation_set()],
-				[['nationalidentitynumbertype'], PingYoVarNationalIdentityNumberType::validation_set()],
-				[['residentialstatus'],PingYoVarResidentialStatus::validation_set()],
+				[['title'], TitleTypes::validation_set()],
+				[['employerindustry'], EmployerIndustryTypes::validation_set()],
+				[['incomesource'], IncomeSourceTypes::validation_set()],
+				[['payfrequency'], PayFrequencyTypes::validation_set()],
+				[['incomepaymenttype'], IncomePaymentTypes::validation_set()],
+				[['nationalidentitynumbertype'], NationalIdentityNumberTypes::validation_set()],
+				[['residentialstatus'],ResidentialStatusTypes::validation_set()],
 				[['consenttocreditsearch','consenttomarketingemails'], $this->consenttocreditsearch_variants],
-				[['bankcardtype'],PingYoVarBankCardType::validation_set()],
+				[['bankcardtype'],BankCardTypes::validation_set()],
 				[['addresscountrycode'],['AF','AD','AE','AG','AI','AL','AM','AN','AO','AQ','AR','AS','AT','AU','AW','AZ','BA','BB','BD','BE','BF','BG','BH','BI',
 				'BJ','BM','BN','BO','BR','BS','BT','BV','BW','BY','BZ','CA','CC','CD','CF','CG','CH','CI','CK','CL','CM','CN','CO','CR','CU','CV','CX','CY','CZ',
 				'DE','DJ','DK','DM','DO','DZ','EC','EE','EG','EH','ER','ES','ET','FI','FJ','FK','FM','FO','FR','FX','GA','GB','GD','GE','GF','GH','GI','GL','GM',
@@ -156,7 +157,7 @@ class PingYoApplicationDetails {
 	} 
 	
 	public function validate() {
-		$validator = new Valitron\Validator(array('title'=>$this->title,'firstname'=>$this->firstname,'lastname'=>$this->lastname,'dateofbirth'=>$this->dateofbirth,'email'=>$this->email,
+		$validator = new \Valitron\Validator(array('title'=>$this->title,'firstname'=>$this->firstname,'lastname'=>$this->lastname,'dateofbirth'=>$this->dateofbirth,'email'=>$this->email,
 		'homephonenumber'=>$this->homephonenumber,'mobilephonenumber'=>$this->mobilephonenumber,'workphonenumber'=>$this->workphonenumber,'employername'=>$this->employername,
 		'jobtitle'=>$this->jobtitle,'employmentstarted'=>$this->employmentstarted,'employerindustry'=>$this->employerindustry,'incomesource'=>$this->incomesource,
 		'payfrequency'=>$this->payfrequency,'payamount'=>$this->payamount,'incomepaymenttype'=>$this->incomepaymenttype,'nextpaydate'=>$this->nextpaydate,

@@ -1,6 +1,8 @@
 <?php
 
-class PingYoVarBankCardType {
+namespace PingYo;
+
+class BankCardTypes {
 	
 	const AmericanExpress = 1;
 	const Solo = 2;
