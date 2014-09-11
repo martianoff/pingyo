@@ -113,7 +113,7 @@ else
 }
 ```
 
-Step 6. Check Result Application
+Step 6. Check Application Result
 
 ```php
 if($application_status->httpcode=202)
@@ -171,3 +171,28 @@ switch($final_status){
 	break;
 }
 ```
+Or Async method:
+```php
+//get and save correlationid for async requests
+$corrid = $application_status->correlationid;
+
+//....
+//async requests code
+$application_status=PingYoStatus::CreateFromCorrelationId($corrid);
+$application_status->refresh();
+if($application_status->percentagecomplete==100)
+{
+	//action
+}
+else
+{
+	//do nothing, next request can take action
+	//or read problems
+	$status = $application_status->status;
+	$problem = $application_status->message;
+}
+```
+
+## RUNNING TESTS
+
+phpunit.phar --bootstrap tests/Bootstrap.php tests/PingYo/basictest

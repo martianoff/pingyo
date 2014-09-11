@@ -544,5 +544,12 @@ class PingYoApplicationTest extends PHPUnit_Framework_TestCase
     }
 
 
+	public function testPingYoApplicationSendAsyncCode(){
+		//....
+		//async requests code
+		$application_status = PingYoStatus::CreateFromCorrelationId('ef8285ed-3af0-45dd-a7bf-d84e8ac80a28');
+		$application_status->refresh();
+		$this->assertTrue($application_status->message=='Unknown Correlation Id');
+	}
     // ...
 }

@@ -13,17 +13,29 @@ class PingYoStatus {
 	public $redirectionurl = "";
 	public $status = "";
 	
-	function __construct($http_code,$json_response){
-		$r = json_decode($json_response);
-		$this->httpcode=$http_code;
-		if(isset($r->Errors))
-		$this->errors=$r->Errors;
-		if(isset($r->CorrelationId))
-		$this->correlationid=$r->CorrelationId;
-		if(isset($r->Message))
-		$this->message=$r->Message;
-		if(isset($r->StatusCheckUrl))
-		$this->statuscheckurl=$r->StatusCheckUrl;
+	function __construct($http_code,$json_response,$correlationid = null){
+		if(!is_null($correlationid)){
+			$this->correlationid = $correlationid;
+			$this->statuscheckurl = '/application/status/'.$correlationid;
+		}
+		else
+		{
+			$r = json_decode($json_response);
+			$this->httpcode=$http_code;
+			if(isset($r->Errors))
+			$this->errors=$r->Errors;
+			if(isset($r->CorrelationId))
+			$this->correlationid=$r->CorrelationId;
+			if(isset($r->Message))
+			$this->message=$r->Message;
+			if(isset($r->StatusCheckUrl))
+			$this->statuscheckurl=$r->StatusCheckUrl;
+		}
+	}
+	
+	public static function CreateFromCorrelationId($correlationid)
+	{
+		return new PingYoStatus(null,null,$correlationid);
 	}
 	
 	public function refresh(){
