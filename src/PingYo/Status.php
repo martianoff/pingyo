@@ -47,6 +47,7 @@ class Status {
 	}
 	
 	public function refresh(){
+		if(!is_null($this->logger))$this->logger->debug("Status::refresh()");
 		$ch = curl_init();
 		
 		if(!is_null($this->logger))$this->logger->info("status request sent: https://leads.paydayleadprosystem.co.uk".$this->statuscheckurl);

@@ -48,14 +48,22 @@ class ApplicationDetails {
 	public $maximumcommissionamount;
 	public $applicationextensions;
 	
+	private $logger = null;
+	
 	private $consenttocreditsearch_variants = [false,true];
 	
+	public function attachLogger(\Psr\Log\LoggerInterface $logger=null){
+		$this->logger = $logger;
+	}
+	
 	private function strDateToJsonDate($strdate){
+		if(!is_null($this->logger))$this->logger->debug("ApplicationDetails::strDateToJsonDate() called with strdate=$strdate");
 		$date = new \DateTime($strdate,new \DateTimeZone("UTC"));
 		return '/Date('.($date->getTimestamp()*1000).')/';
 	}
 	
 	private function NormalizePhone($phone,$country){
+		if(!is_null($this->logger))$this->logger->debug("ApplicationDetails::NormalizePhone() called with phone=$phone and country=$country");
 		$phoneUtil = \libphonenumber\PhoneNumberUtil::getInstance();
 		$swissNumberProto = $phoneUtil->parse($phone, $country);
 		//PhoneNumberFormat::NATIONAL or PhoneNumberFormat::INTERNATIONAL
@@ -63,23 +71,27 @@ class ApplicationDetails {
 	}
 	
 	private function getValidDOB(){
+		if(!is_null($this->logger))$this->logger->debug("ApplicationDetails::getValidDOB() called");
 		$date = new \DateTime("now",new \DateTimeZone("UTC"));
 		$date->sub(date_interval_create_from_date_string('18 years'));
 		return $date;
 	}
 	
 	private function getValidPAYDATE(){
+		if(!is_null($this->logger))$this->logger->debug("ApplicationDetails::getValidPAYDATE() called");
 		$date = new \DateTime("now",new \DateTimeZone("UTC"));
 		$date->add(date_interval_create_from_date_string('45 days'));
 		return $date;
 	}
 	
 	private function getTodayDate(){
+		if(!is_null($this->logger))$this->logger->debug("ApplicationDetails::getTodayDate() called");
 		$date = new \DateTime("now",new \DateTimeZone("UTC"));
 		return $date;
 	}
 	
 	private function getValidationRules() {
+		if(!is_null($this->logger))$this->logger->debug("ApplicationDetails::getValidationRules() called");
 		return [
 			'required'=>[
 				[['title', 'firstname', 'lastname', 'dateofbirth', 'email', 'homephonenumber', 'mobilephonenumber', 'workphonenumber',
@@ -157,6 +169,7 @@ class ApplicationDetails {
 	} 
 	
 	public function validate() {
+		if(!is_null($this->logger))$this->logger->debug("ApplicationDetails::validate() called");
 		$validator = new \Valitron\Validator(array('title'=>$this->title,'firstname'=>$this->firstname,'lastname'=>$this->lastname,'dateofbirth'=>$this->dateofbirth,'email'=>$this->email,
 		'homephonenumber'=>$this->homephonenumber,'mobilephonenumber'=>$this->mobilephonenumber,'workphonenumber'=>$this->workphonenumber,'employername'=>$this->employername,
 		'jobtitle'=>$this->jobtitle,'employmentstarted'=>$this->employmentstarted,'employerindustry'=>$this->employerindustry,'incomesource'=>$this->incomesource,
@@ -170,13 +183,16 @@ class ApplicationDetails {
 		'maximumcommissionamount'=>$this->maximumcommissionamount,'applicationextensions'=>$this->applicationextensions));
 		$validator->rules($this->getValidationRules());
 		if($validator->validate()) {
+			if(!is_null($this->logger))$this->logger->info("ApplicationDetails validation passed");
 		    return true;
 		} else {
+			if(!is_null($this->logger))$this->logger->warning("ApplicationDetails validation errors found: ",array('errors'=>$validator->errors()));
 		    return $validator->errors();
 		}
 	}
 	
 	public function toArray(){
+		if(!is_null($this->logger))$this->logger->debug("ApplicationDetails::toArray() called");
 		$r=$this->validate();
 		if($r===true)
 		{
@@ -201,6 +217,7 @@ class ApplicationDetails {
 	}
 	
 	public function toJson() {
+		if(!is_null($this->logger))$this->logger->debug("ApplicationDetails::toJson() called");
 		$r=$this->validate();
 		if($r===true)
 		{

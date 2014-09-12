@@ -41,7 +41,7 @@ class Application {
 	}
 	
 	public function validate($full_validation=true) {
-		if(!is_null($this->logger))$this->logger->info("validation start");
+		if(!is_null($this->logger))$this->logger->debug("Application::validate() called with full_validation=$full_validation");
 		
 		$validator = new \Valitron\Validator(array('campaign'=>$this->campaign,'affiliateid'=>$this->affiliateid,'subaffiliate'=>$this->subaffiliate,'timeout'=>$this->timeout,'testonly'=>$this->testonly,'applicationdetails'=>$this->applicationdetails,'sourcedetails'=>$this->sourcedetails));
 		$validator->rules($this->validation_rules);
@@ -50,34 +50,39 @@ class Application {
 			{
 				if(($this->applicationdetails->validate())&&($this->sourcedetails->validate()))
 				{
-					if(!is_null($this->logger))$this->logger->info("validation passed");
+					if(!is_null($this->logger))$this->logger->info("Application validation passed");
 					return true;
 				}
 				else
 				{
-					if(!is_null($this->logger))$this->logger->warning("validation errors found in child object");
+					if(!is_null($this->logger))$this->logger->warning("Application validation errors found in child object");
 					return false;
 				}
 			}
 			else
 		    return true;
 		} else {
-		    if(!is_null($this->logger))$this->logger->warning("validation errors found in main object: ",array('errors'=>$validator->errors()));
+		    if(!is_null($this->logger))$this->logger->warning("Application validation errors found in main object: ",array('errors'=>$validator->errors()));
 		    return $validator->errors();
 		}
 	}
 	
 	public function setApplicationDetails(ApplicationDetails $applicationdetails)
 	{
+		if(!is_null($this->logger))$this->logger->debug("Application::setApplicationDetails() called with applicationdetails=".var_export($applicationdetails,true));
 		$this->applicationdetails = $applicationdetails;
+		if(!is_null($this->logger))$applicationdetails->attachLogger($this->logger);
 	}
 	
 	public function setSourceDetails(SourceDetails $sourcedetails)
 	{
+		if(!is_null($this->logger))$this->logger->debug("Application::setSourceDetails() called with sourcedetails=".var_export($sourcedetails,true));
 		$this->sourcedetails = $sourcedetails;
+		if(!is_null($this->logger))$sourcedetails->attachLogger($this->logger);
 	}
 	
 	public function toArray(){
+		if(!is_null($this->logger))$this->logger->debug("Application::toArray() called");
 		$r=$this->validate();
 		if($r===true)
 		{
@@ -88,6 +93,7 @@ class Application {
 	}
 	
 	public function toJson() {
+		if(!is_null($this->logger))$this->logger->debug("Application::toJson() called");
 		$r=$this->validate();
 		if($r===true)
 		{
@@ -98,10 +104,12 @@ class Application {
 	}
 	
 	public function get_connection_status(){
+		if(!is_null($this->logger))$this->logger->debug("Application::get_connection_status() called");
 		return $this->connection_status;
 	}
 	
 	public function send() {
+		if(!is_null($this->logger))$this->logger->debug("Application::send() called");
 		$r=$this->validate();
 		if($r===true)
 		{
