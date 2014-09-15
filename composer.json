@@ -14,14 +14,13 @@
 	],
 	"repositories": [
         {
-            "packagist": false,
             "type": "vcs",
             "url": "https://github.com/maksimru/valitron"
         }
     ],
 	"require": {
 		"php": ">=5.3.2",
-		"vlucas/valitron": "dev-additional_rules_set"
+		"vlucas/valitron": "dev-additional_rules_set as dev-master"
 	},
 	"require-dev": {
 		"phpunit/phpunit": "@stable",
