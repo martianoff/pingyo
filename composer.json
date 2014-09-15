@@ -14,6 +14,7 @@
 	],
 	"repositories": [
         {
+            "packagist": false,
             "type": "vcs",
             "url": "https://github.com/maksimru/valitron"
         }
@@ -27,6 +28,7 @@
 		"monolog/monolog": "1.10.0"
 	},
 	"minimum-stability": "dev",
+	"prefer-stable": true,
 	"autoload": {
 		"psr-4": {
 			"PingYo\\": "src/"
