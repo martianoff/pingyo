@@ -1,14 +1,14 @@
 {
-	"name": "maksimru/pingyoapplication",
+	"name": "maksimru/pingyo",
 	"type": "library",
 	"description": "",
 	"keywords": ["pingyo"],
-	"homepage": "http://github.com/maksimru/pingyoapplication",
+	"homepage": "https://github.com/maksimru/pingyo",
 	"license" : "BSD",
 	"authors" : [
 		{
 			"name": "Maksim",
-			"email": "maxmru@yandex.ru",
+			"email": "maxmtmn@gmail.com",
 			"homepage": "http://github.com/maksimru/"
 		}
 	],
