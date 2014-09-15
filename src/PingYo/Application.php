@@ -120,7 +120,7 @@ class Application
             $this->logger->debug("Application::validate() called with full_validation=$full_validation");
         }
 
-        $validator = new \Valitron\Validator(array(
+        $validator = new ExtendedValidator(array(
                 'campaign' => $this->campaign,
                 'affiliateid' => $this->affiliateid,
                 'subaffiliate' => $this->subaffiliate,

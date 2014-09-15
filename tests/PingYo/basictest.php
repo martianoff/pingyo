@@ -4,10 +4,67 @@ class ApplicationTest extends PHPUnit_Framework_TestCase
 {
     //
 
+    public function testRequired_withInvalid()
+    {
+        $v = new PingYo\ExtendedValidator(array('nothing' => "nothing", 'phone'=>'123'));
+        $v->rule('required_with', ['country'], 'phone');
+        $this->assertFalse($v->validate());
+    }
+
+    public function testRequired_withoutInvalid()
+    {
+        $v = new PingYo\ExtendedValidator(array('credit_card' => null));
+        $v->rule('required_without', ['credit_card'], 'bank_account');
+        $this->assertFalse($v->validate());
+    }
+
+    public function testPhoneInvalid()
+    {
+        $v = new PingYo\ExtendedValidator(array('phone' => '+12821379167','country' => 'GB'));
+        $v->rule('phone', ['phone'], 'country');
+        $this->assertFalse($v->validate());
+    }
+
+    public function testRequired_ifInvalid()
+    {
+        $v = new PingYo\ExtendedValidator(array('good_type' => 'auto'));
+        $v->rule('required_if', ['type'], ['good_type',['fruit','auto']]);
+        $this->assertFalse($v->validate());
+    }
+
+    public function testRequired_withValid()
+    {
+        $v = new PingYo\ExtendedValidator(array('phone' => '+12821379167','country' => 'US'));
+        $v->rule('required_with', ['country'], 'phone');
+        $this->assertTrue($v->validate());
+    }
+
+    public function testRequired_withoutValid()
+    {
+        $v = new PingYo\ExtendedValidator(array('credit_card' => '12321421','bank_account' => null));
+        $v->rule('required_without', ['credit_card'], 'bank_account');
+        $v->rule('required_without', ['bank_account'], 'credit_card');
+        $this->assertTrue($v->validate());
+    }
+
+    public function testPhoneValid()
+    {
+        $v = new PingYo\ExtendedValidator(array('phone' => '+41446681800','country' => 'CH'));
+        $v->rule('phone', ['phone'], 'country');
+        $this->assertTrue($v->validate());
+    }
+
+    public function testRequired_ifValid()
+    {
+        $v = new PingYo\ExtendedValidator(array('type' => 'fruit','good_type' => 'auto'));
+        $v->rule('required_if', ['type'], ['good_type',['fruit','cheap']]);
+        $this->assertTrue($v->validate());
+    }
+    
     public function testConstantValidation()
     {
         $input = array('foo' => PingYo\TitleTypes::MR);
-        $validator = new Valitron\Validator($input);
+        $validator = new PingYo\ExtendedValidator($input);
         $validator->rule('required', 'foo');
         $validator->rule('in', 'foo', PingYo\TitleTypes::validation_set());
         $result = $validator->validate();

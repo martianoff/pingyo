@@ -45,7 +45,7 @@ class SourceDetails
         if (!is_null($this->logger)) {
             $this->logger->debug("SourceDetails::validate() called");
         }
-        $validator = new \Valitron\Validator(array(
+        $validator = new ExtendedValidator(array(
                 'address' => $this->address,
                 'clientuseragent' => $this->clientuseragent,
                 'creationurl' => $this->creationurl,

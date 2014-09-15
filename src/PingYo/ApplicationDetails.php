@@ -74,7 +74,7 @@ class ApplicationDetails
         if (!is_null($this->logger)) {
             $this->logger->debug("ApplicationDetails::validate() called");
         }
-        $validator = new \Valitron\Validator(array(
+        $validator = new ExtendedValidator(array(
             'title' => $this->title,
             'firstname' => $this->firstname,
             'lastname' => $this->lastname,
