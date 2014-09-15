@@ -12,12 +12,6 @@
 			"homepage": "http://github.com/maksimru/"
 		}
 	],
-	"repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/maksimru/valitron"
-        }
-    ],
 	"require": {
 		"php": ">=5.3.2",
 		"vlucas/valitron": "1.2.2",
