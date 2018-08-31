@@ -1,9 +1,14 @@
 <?php
+
 namespace PingYo;
+
+use libphonenumber\PhoneNumberFormat;
+use libphonenumber\PhoneNumberUtil;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 
 class ApplicationDetails
 {
-
     public $title;
     public $firstname;
     public $lastname;
@@ -49,20 +54,41 @@ class ApplicationDetails
     public $maximumcommissionamount;
     public $applicationextensions;
 
+    public $combinedMonthlyHouseholdIncome;
+    public $confirmedByApplicant;
+    public $consentToMarketingPhone;
+    public $consentToMarketingSms;
+    public $food;
+    public $loanProceedUse;
+    public $maritalStatus;
+    public $numberOfDependents;
+    public $term;
+    public $transport;
+    public $usesOnlineBanking;
+    public $utilities;
+
     private $logger = null;
 
     private $consenttocreditsearch_variants = [false, true];
 
-    public function attachLogger(\Psr\Log\LoggerInterface $logger = null)
+    public function __construct(LoggerInterface $logger = null)
+    {
+        $this->logger = $logger;
+
+        if ($this->logger === null) {
+            $this->logger = new NullLogger();
+        }
+    }
+
+    public function attachLogger(LoggerInterface $logger = null)
     {
         $this->logger = $logger;
     }
 
     public function toJson()
     {
-        if (!is_null($this->logger)) {
-            $this->logger->debug("ApplicationDetails::toJson() called");
-        }
+        $this->logger->debug("ApplicationDetails::toJson() called");
+
         $r = $this->validate();
         if ($r === true) {
             return json_encode($this->toArray());
@@ -71,9 +97,8 @@ class ApplicationDetails
 
     public function validate()
     {
-        if (!is_null($this->logger)) {
-            $this->logger->debug("ApplicationDetails::validate() called");
-        }
+        $this->logger->debug("ApplicationDetails::validate() called");
+
         $validator = new ExtendedValidator(array(
             'title' => $this->title,
             'firstname' => $this->firstname,
@@ -115,28 +140,36 @@ class ApplicationDetails
             'otherexpenses' => $this->otherexpenses,
             'minimumcommissionamount' => $this->minimumcommissionamount,
             'maximumcommissionamount' => $this->maximumcommissionamount,
-            'applicationextensions' => $this->applicationextensions
+            'applicationextensions' => $this->applicationextensions,
+            'combinedMonthlyHouseholdIncome' => $this->combinedMonthlyHouseholdIncome,
+            'confirmedByApplicant' => $this->confirmedByApplicant,
+            'consentToMarketingPhone' => $this->consentToMarketingPhone,
+            'consentToMarketingSms' => $this->consentToMarketingSms,
+            'food' => $this->food,
+            'loanProceedUse' => $this->loanProceedUse,
+            'maritalStatus' => $this->maritalStatus,
+            'numberOfDependents' => $this->numberOfDependents,
+            'term' => $this->term,
+            'transport' => $this->transport,
+            'usesOnlineBanking' => $this->usesOnlineBanking,
+            'utilities' => $this->utilities,
         ));
         $validator->rules($this->getValidationRules());
         if ($validator->validate()) {
-            if (!is_null($this->logger)) {
-                $this->logger->info("ApplicationDetails validation passed");
-            }
+            $this->logger->info("ApplicationDetails validation passed");
+
             return true;
-        } else {
-            if (!is_null($this->logger)) {
-                $this->logger->warning("ApplicationDetails validation errors found: ",
-                    array('errors' => $validator->errors()));
-            }
-            return $validator->errors();
         }
+
+        $this->logger->warning("ApplicationDetails validation errors found: ", array('errors' => $validator->errors()));
+
+        return $validator->errors();
     }
 
     private function getValidationRules()
     {
-        if (!is_null($this->logger)) {
-            $this->logger->debug("ApplicationDetails::getValidationRules() called");
-        }
+        $this->logger->debug("ApplicationDetails::getValidationRules() called");
+
         return [
             'required' => [
                 [
@@ -174,7 +207,16 @@ class ApplicationDetails
                         'bankroutingnumber',
                         'monthlymortgagerent',
                         'monthlycreditcommitments',
-                        'otherexpenses'
+                        'otherexpenses',
+                        'confirmedByApplicant',
+                        'consentToMarketingSms',
+                        'consentToMarketingPhone',
+                        'food',
+                        'transport',
+                        'loanProceedUse',
+                        'numberOfDependents',
+                        'term',
+                        'utilities',
                     ]
                 ]
             ],
@@ -186,7 +228,8 @@ class ApplicationDetails
                 [['housename'], 'housenumber']
             ],
             'required_if' => [
-                [['nationalidentitynumber'], ['bankcardtype', ['None', 'Unknown']]]
+                [['nationalidentitynumber'], ['bankcardtype', ['None', 'Unknown']]],
+                [['combinedMonthlyHouseholdIncome'], ['maritalStatus', ['Married']]],
             ],
             'email' => [
                 [['email']]
@@ -221,6 +264,8 @@ class ApplicationDetails
                 [['residentialstatus'], ResidentialStatusTypes::validation_set()],
                 [['consenttocreditsearch', 'consenttomarketingemails'], $this->consenttocreditsearch_variants],
                 [['bankcardtype'], BankCardTypes::validation_set()],
+                [['loanProceedUse'], LoanProceedUses::validation_set()],
+                [['maritalStatus'], MaritalStatuses::validation_set()],
                 [
                     ['addresscountrycode'],
                     [
@@ -469,7 +514,7 @@ class ApplicationDetails
                 ]
             ],
             'integer' => [
-                [['payamount,loanamount']]
+                [['payamount,loanamount',]]
             ],
             'min' => [
                 [['payamount'], 0]
@@ -484,7 +529,11 @@ class ApplicationDetails
                         'monthlycreditcommitments',
                         'otherexpenses',
                         'minimumcommissionamount',
-                        'maximumcommissionamount'
+                        'maximumcommissionamount',
+                        'food',
+                        'transport',
+                        'numberOfDependents',
+                        'term'
                     ]
                 ]
             ]
@@ -493,18 +542,15 @@ class ApplicationDetails
 
     private function getTodayDate()
     {
-        if (!is_null($this->logger)) {
-            $this->logger->debug("ApplicationDetails::getTodayDate() called");
-        }
-        $date = new \DateTime("now", new \DateTimeZone("UTC"));
-        return $date;
+        $this->logger->debug("ApplicationDetails::getTodayDate() called");
+
+        return new \DateTime("now", new \DateTimeZone("UTC"));
     }
 
     private function getValidPAYDATE()
     {
-        if (!is_null($this->logger)) {
-            $this->logger->debug("ApplicationDetails::getValidPAYDATE() called");
-        }
+        $this->logger->debug("ApplicationDetails::getValidPAYDATE() called");
+
         $date = new \DateTime("now", new \DateTimeZone("UTC"));
         $date->add(date_interval_create_from_date_string('45 days'));
         return $date;
@@ -512,19 +558,17 @@ class ApplicationDetails
 
     private function getValidDOB()
     {
-        if (!is_null($this->logger)) {
-            $this->logger->debug("ApplicationDetails::getValidDOB() called");
-        }
-        $date = new \DateTime("now", new \DateTimeZone("UTC"));
+        $this->logger->debug("ApplicationDetails::getValidDOB() called");
+
+        $date = new \DateTime('now', new \DateTimeZone("UTC"));
         $date->sub(date_interval_create_from_date_string('18 years'));
         return $date;
     }
 
     public function toArray()
     {
-        if (!is_null($this->logger)) {
-            $this->logger->debug("ApplicationDetails::toArray() called");
-        }
+        $this->logger->debug("ApplicationDetails::toArray() called");
+
         $r = $this->validate();
         if ($r === true) {
             return [
@@ -569,30 +613,40 @@ class ApplicationDetails
                 'MinimumCommissionAmount' => $this->minimumcommissionamount,
                 'MaximumCommissionAmount' => $this->maximumcommissionamount,
                 'ApplicationExtensions' => $this->applicationextensions,
-                "LoanAmountCurrencyCode" => null,
-                "PayAmountCurrencyCode" => null
+                'LoanAmountCurrencyCode' => null,
+                'PayAmountCurrencyCode' => null,
+                'CombinedMonthlyHouseholdIncome' => $this->combinedMonthlyHouseholdIncome,
+                'ConfirmedByApplicant' => $this->confirmedByApplicant,
+                'ConsentToMarketingPhone' => $this->consentToMarketingPhone,
+                'ConsentToMarketingSms' => $this->consentToMarketingSms,
+                'Food' => $this->food,
+                'LoanProceedUse' => $this->loanProceedUse,
+                'MaritalStatus' => $this->maritalStatus,
+                'NumberOfDependents' => $this->numberOfDependents,
+                'Term' => $this->term,
+                'Transport' => $this->transport,
+                'UsesOnlineBanking' => $this->usesOnlineBanking,
+                'Utilities' => $this->utilities,
             ];
         }
     }
 
     private function strDateToJsonDate($strdate)
     {
-        if (!is_null($this->logger)) {
-            $this->logger->debug("ApplicationDetails::strDateToJsonDate() called with strdate=$strdate");
-        }
+        $this->logger->debug("ApplicationDetails::strDateToJsonDate() called with strdate=$strdate");
+
         $date = new \DateTime($strdate, new \DateTimeZone("UTC"));
         return '/Date(' . ($date->getTimestamp() * 1000) . ')/';
     }
 
     private function NormalizePhone($phone, $country)
     {
-        if (!is_null($this->logger)) {
-            $this->logger->debug("ApplicationDetails::NormalizePhone() called with phone=$phone and country=$country");
-        }
-        $phoneUtil = \libphonenumber\PhoneNumberUtil::getInstance();
+        $this->logger->debug("ApplicationDetails::NormalizePhone() called with phone=$phone and country=$country");
+
+        $phoneUtil = PhoneNumberUtil::getInstance();
         $swissNumberProto = $phoneUtil->parse($phone, $country);
         //PhoneNumberFormat::NATIONAL or PhoneNumberFormat::INTERNATIONAL
-        return $phoneUtil->format($swissNumberProto, \libphonenumber\PhoneNumberFormat::NATIONAL);
+        return $phoneUtil->format($swissNumberProto, PhoneNumberFormat::NATIONAL);
     }
 
 }

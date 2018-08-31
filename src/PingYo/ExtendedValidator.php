@@ -1,40 +1,40 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: admin
- * Date: 15.09.14
- * Time: 19:57
- */
 
 namespace PingYo;
 
-class ExtendedValidator extends \Valitron\Validator {
+use libphonenumber\PhoneNumberUtil;
+use Valitron\Validator;
+
+class ExtendedValidator extends Validator
+{
     protected function validateRequired_with($field, $value, array $params)
     {
         $field2 = $params[0];
 
-        if(isset($this->_fields[$field2])){
-            if((!is_null($this->_fields[$field2]))&&(!empty($this->_fields[$field2])))
+        if (isset($this->_fields[$field2])) {
+            if (($this->_fields[$field2] !== null) && !empty($this->_fields[$field2])) {
                 return $this->validateRequired($field, $value);
-            else
-                return true;
-        }
-        else
+            }
+
             return true;
+        }
+
+        return true;
     }
 
     protected function validateRequired_without($field, $value, array $params)
     {
         $field2 = $params[0];
 
-        if(isset($this->_fields[$field2])){
-            if((!is_null($this->_fields[$field2]))&&(!empty($this->_fields[$field2])))
+        if (isset($this->_fields[$field2])) {
+            if (($this->_fields[$field2] !== null) && !empty($this->_fields[$field2])) {
                 return true;
-            else
-                return $this->validateRequired($field, $value);
-        }
-        else
+            }
+
             return $this->validateRequired($field, $value);
+        }
+
+        return $this->validateRequired($field, $value);
     }
 
     protected function validateRequired_if($field, $value, array $params)
@@ -42,39 +42,41 @@ class ExtendedValidator extends \Valitron\Validator {
         $field2 = $params[0][0];
         $field2_values = $params[0][1];
 
-        if(isset($this->_fields[$field2])){
-            if((!is_null($this->_fields[$field2]))&&(!empty($this->_fields[$field2])))
-            {
-                if(in_array($this->_fields[$field2], $field2_values))
+        if (isset($this->_fields[$field2])) {
+            if (($this->_fields[$field2] !== null) && !empty($this->_fields[$field2])) {
+                if (in_array($this->_fields[$field2], $field2_values, true)) {
                     return $this->validateRequired($field, $value);
-                else
-                    return true;
-            }
-            else
+                }
+
                 return true;
-        }
-        else
+            }
+
             return true;
+        }
+
+        return true;
     }
 
     protected function validatePhone($field, $value, array $params)
     {
-        $phoneUtil = \libphonenumber\PhoneNumberUtil::getInstance();
+        $phoneUtil = PhoneNumberUtil::getInstance();
         try {
             $field2 = $params[0];
             $phone_country = $this->_fields[$field2];
             $swissNumberProto = $phoneUtil->parse($value, $phone_country);
-            if($phoneUtil->isValidNumber($swissNumberProto))
+            if ($phoneUtil->isValidNumber($swissNumberProto)) {
                 return true;
-            else
-                return false;
+            }
+
+            return false;
         } catch (\libphonenumber\NumberParseException $e) {
             return false;
         }
     }
 
-    function __construct($input){
-        if(is_callable('parent::__construct')) {
+    public function __construct($input)
+    {
+        if (is_callable('parent::__construct')) {
             parent::__construct($input);
         }
     }
@@ -86,7 +88,7 @@ class ExtendedValidator extends \Valitron\Validator {
                 list($values, $multiple) = $this->getPart($this->_fields, explode('.', $field));
 
                 // Don't validate if the field is not required and the value is empty
-                if ($v['rule'] !== 'required' && $v['rule'] !== 'required_without' && $v['rule'] !== 'required_with' && $v['rule'] !== 'required' && !$this->hasRule('required_if', $field) && (! isset($values) || $values === '' || ($multiple && count($values) == 0))) {
+                if ($v['rule'] !== 'required' && $v['rule'] !== 'required_without' && $v['rule'] !== 'required_with' && $v['rule'] !== 'required' && !$this->hasRule('required_if', $field) && (!isset($values) || $values === '' || ($multiple && count($values) == 0))) {
                     continue;
                 }
 
@@ -107,8 +109,8 @@ class ExtendedValidator extends \Valitron\Validator {
                 }
 
                 if (!$result) {
-                    if(is_array($v['params'])) {
-                        foreach ($v['params'] as $pname=>$param) {
+                    if (is_array($v['params'])) {
+                        foreach ($v['params'] as $pname => $param) {
                             if (is_array($param)) {
                                 $better_param = array();
                                 foreach ($param as $subparam) {

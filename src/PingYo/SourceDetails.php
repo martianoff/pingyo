@@ -1,5 +1,9 @@
 <?php
+
 namespace PingYo;
+
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 
 class SourceDetails
 {
@@ -24,16 +28,21 @@ class SourceDetails
         ]
     ];
 
-    public function attachLogger(\Psr\Log\LoggerInterface $logger = null)
+    public function __construct()
+    {
+        $this->logger = new NullLogger();
+    }
+
+    public function attachLogger(LoggerInterface $logger = null)
     {
         $this->logger = $logger;
     }
 
     public function toJson()
     {
-        if (!is_null($this->logger)) {
-            $this->logger->debug("SourceDetails::toJson() called");
-        }
+
+        $this->logger->debug("SourceDetails::toJson() called");
+
         $r = $this->validate();
         if ($r === true) {
             return json_encode($this->toArray());
@@ -42,36 +51,35 @@ class SourceDetails
 
     public function validate()
     {
-        if (!is_null($this->logger)) {
-            $this->logger->debug("SourceDetails::validate() called");
-        }
+
+        $this->logger->debug("SourceDetails::validate() called");
+
         $validator = new ExtendedValidator(array(
-                'address' => $this->address,
-                'clientuseragent' => $this->clientuseragent,
-                'creationurl' => $this->creationurl,
-                'referringurl' => $this->referringurl,
-                'languagecodes' => $this->languagecodes
-            ));
+            'address' => $this->address,
+            'clientuseragent' => $this->clientuseragent,
+            'creationurl' => $this->creationurl,
+            'referringurl' => $this->referringurl,
+            'languagecodes' => $this->languagecodes
+        ));
         $validator->rules($this->validation_rules);
         if ($validator->validate()) {
-            if (!is_null($this->logger)) {
-                $this->logger->info("SourceDetails validation passed");
-            }
+
+            $this->logger->info("SourceDetails validation passed");
+
             return true;
         } else {
-            if (!is_null($this->logger)) {
-                $this->logger->warning("SourceDetails validation errors found: ",
-                    array('errors' => $validator->errors()));
-            }
+
+            $this->logger->warning("SourceDetails validation errors found: ", array('errors' => $validator->errors()));
+
             return $validator->errors();
         }
     }
 
     public function toArray()
     {
-        if (!is_null($this->logger)) {
-            $this->logger->debug("SourceDetails::toArray() called");
-        }
+
+        $this->logger->debug("SourceDetails::toArray() called");
+
         $r = $this->validate();
         if ($r === true) {
             return [

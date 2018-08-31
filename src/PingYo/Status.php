@@ -1,29 +1,33 @@
 <?php
+
 namespace PingYo;
+
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 
 class Status
 {
-
-    public $httpcode = "";
-    public $errors = "";
-    public $correlationid = "";
-    public $message = "";
-    public $statuscheckurl = "";
+    public $httpcode = '';
+    public $errors = '';
+    public $correlationid = '';
+    public $message = '';
+    public $statuscheckurl = '';
 
     public $percentagecomplete = 0;
-    public $redirectionurl = "";
-    public $status = "";
-    public $estimatedcommission = "";
+    public $redirectionurl = '';
+    public $status = '';
+    public $estimatedcommission = '';
 
     private $logger = null;
 
-    function __construct($http_code, $json_response, $correlationid = null, \Psr\Log\LoggerInterface $logger = null)
+    public function __construct($http_code, $json_response, $correlationid = null, LoggerInterface $logger = null)
     {
-        if (!is_null($logger)) {
-            $this->logger = $logger;
+        if ($logger === null) {
+            $logger = new NullLogger();
         }
+        $this->logger = $logger;
 
-        if (!is_null($correlationid)) {
+        if ($correlationid !== null) {
             $this->correlationid = $correlationid;
             $this->statuscheckurl = '/application/status/' . $correlationid;
         } else {
@@ -44,23 +48,20 @@ class Status
         }
     }
 
-    public static function CreateFromCorrelationId($correlationid, \Psr\Log\LoggerInterface $logger = null)
+    public static function CreateFromCorrelationId($correlationid, LoggerInterface $logger = null)
     {
         return new Status(null, null, $correlationid, $logger);
     }
 
     public function refresh()
     {
-        if (!is_null($this->logger)) {
-            $this->logger->debug("Status::refresh()");
-        }
+        $this->logger->debug('Status::refresh()');
+
         $ch = curl_init();
 
-        if (!is_null($this->logger)) {
-            $this->logger->info("status request sent: https://leads.paydayleadprosystem.co.uk" . $this->statuscheckurl);
-        }
+        $this->logger->info('status request sent: https://leads.pingyo.co.uk' . $this->statuscheckurl);
 
-        curl_setopt($ch, CURLOPT_URL, "https://leads.paydayleadprosystem.co.uk" . $this->statuscheckurl);
+        curl_setopt($ch, CURLOPT_URL, 'https://leads.pingyo.co.uk' . $this->statuscheckurl);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
         curl_setopt($ch, CURLOPT_HTTPHEADER, array(
@@ -70,9 +71,7 @@ class Status
 
         $server_output = curl_exec($ch);
 
-        if (!is_null($this->logger)) {
-            $this->logger->info('got response: ' . $server_output);
-        }
+        $this->logger->info('got response: ' . $server_output);
 
         $r = json_decode($server_output);
         if (isset($r->PercentageComplete)) {
