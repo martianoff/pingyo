@@ -18,8 +18,6 @@ class PayFrequencyTypes
     const LastWednesday = 11;
     const LastTuesday = 12;
     const LastMonday = 13;
-    const Other = 14;
-    const None = 15;
 
     public static function validation_set()
     {
@@ -37,8 +35,6 @@ class PayFrequencyTypes
             self::LastWednesday,
             self::LastTuesday,
             self::LastMonday,
-            self::Other,
-            self::None
         ];
     }
 }

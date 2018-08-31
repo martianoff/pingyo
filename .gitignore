@@ -6,3 +6,4 @@ vendor
 pingyo-test1.log
 pingyo-test2.log
 .idea
+bin/*

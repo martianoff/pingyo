@@ -61,14 +61,27 @@ $application_details->addressmovein = "2014-08-01";
 $application_details->addresspostcode = "BT602EW";
 
 $application_details->bankaccountnumber = "12345678";
-$application_details->bankcardtype = PingYo\BankCardTypes::VisaDebit;
+$application_details->bankcardtype = BankCardTypes::VisaDebit;
 $application_details->bankroutingnumber = "123456";
 $application_details->monthlymortgagerent = 600;
 $application_details->monthlycreditcommitments = 100;
 $application_details->otherexpenses = 250;
 $application_details->minimumcommissionamount = 0;
 $application_details->maximumcommissionamount = 0;
-$application_details->applicationextensions = ["x"=>"hello","y"=>"world"];
+$application_details->applicationextensions = [["x" => "hello"], ["y" => "world"]];
+
+$application_details->combinedMonthlyHouseholdIncome = 100;
+$application_details->confirmedByApplicant = true;
+$application_details->consentToMarketingPhone = true;
+$application_details->consentToMarketingSms = true;
+$application_details->food = 100;
+$application_details->loanProceedUse = LoanProceedUses::Other;
+$application_details->maritalStatus = MaritalStatuses::Other;
+$application_details->numberOfDependents = 0;
+$application_details->term = 2;
+$application_details->transport = 200;
+$application_details->usesOnlineBanking = true;
+$application_details->utilities = 300;
 ```
 
 Step 3. Create Application object and attach ApplicationDetails and SourceDetails objects
